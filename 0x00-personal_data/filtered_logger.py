@@ -6,10 +6,22 @@ import re
 from typing import List
 
 
-def filter_datum(fields: List[str], redaction: str, message: str, separator: str) -> str:
-    """returns the log message obfuscated"""
+def pattern(separator, fields, redaction, message):
     fn1 = lambda x, y: r'(?<=' + x + r'=).*?(?=' + y + r')'
-    replace = lambda x: re.sub(fn1(x, separator), redaction, message)
+    replace = lambda x: re.sub(
+        fn1(x, separator),
+        redaction, message)
+    return '|'.join(map(replace, fields))
 
-    for field in fields:
-        replace(field)
+
+def filter_datum(
+        fields: List[str],
+        redaction: str,
+        message: str,
+        separator: str) -> str:
+    """returns the log message obfuscated"""
+    return re.sub(pattern(
+        separator,
+        fields,
+        redaction,
+        message), redaction, message)
