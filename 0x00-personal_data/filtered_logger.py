@@ -6,16 +6,15 @@ import re
 from typing import List
 
 
-def extraxt(field: str, message: str,
-            separator: str) -> str:
+def extract(fd: str,
+            sep: str) -> str:
     """returns the value of a field in a message"""
-    return re.search(f'{field}=(.*?){separator}',
-                     message).group(1)
+    return r'(?P<field>{})=[^{}]*'.format('|'.join(fd), sep)
 
 
-def pattern(fields: List[str], separator: str) -> str:
-    """returns the pattern for the regex"""
-    return f'({separator.join(fields)})=(.*?){separator}'
+def replace(red: str) -> str:
+    """returns the pattern to replace"""
+    return r'\g<field>={}'.format(red)
 
 
 def filter_datum(
@@ -24,6 +23,5 @@ def filter_datum(
         message: str,
         separator: str) -> str:
     """returns the log message obfuscated"""
-    return re.sub(pattern(fields, separator),
-                  lambda x: f'{x.group(1)}={redaction}',
-                  message)
+    return re.sub(extract(fields, separator),
+                  replace(redaction), message)
