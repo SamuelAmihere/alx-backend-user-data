@@ -2,11 +2,11 @@
 """
 1. Regex-ing
 """
-import re
-from typing import List
 import os
+import re
 import logging
 import mysql.connector
+from typing import List
 
 
 PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
