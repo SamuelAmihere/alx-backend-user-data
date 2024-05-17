@@ -73,3 +73,30 @@ def filter_datum(
     """returns the log message obfuscated"""
     return re.sub(extract(fields, separator),
                   replace(redaction), message)
+
+
+def main():
+    """connects to the secure database
+    and log all rows in the users table
+    """
+    fields = "name,email,phone,ssn,password,ip,last_login,user_agent"
+    
+    query = "SELECT {} FROM users".format(fields)
+
+    logger = get_logger()
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    for row in rows:
+        msg = "; ".join(
+            [f"{fields.split(',')[i]}={row[i]}" for i in range(len(fields.split(',')))])
+        log = logging.LogRecord('user_data', logging.INFO, None, None, msg, None, None)
+        logger.handle(log)
+
+    cursor.close()
+
+
+if __name__ == '__main__':
+    main()
