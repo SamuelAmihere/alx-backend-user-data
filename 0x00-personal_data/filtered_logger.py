@@ -80,7 +80,7 @@ def main():
     and log all rows in the users table
     """
     fields = "name,email,phone,ssn,password,ip,last_login,user_agent"
-    
+
     query = "SELECT {} FROM users".format(fields)
 
     logger = get_logger()
@@ -91,8 +91,16 @@ def main():
     rows = cursor.fetchall()
     for row in rows:
         msg = "; ".join(
-            [f"{fields.split(',')[i]}={row[i]}" for i in range(len(fields.split(',')))])
-        log = logging.LogRecord('user_data', logging.INFO, None, None, msg, None, None)
+            [f"{fields.split(',')[i]}={row[i]}"
+             for i in range(len(fields.split(',')))])
+        log = logging.LogRecord(
+            'user_data',
+            logging.INFO,
+            None,
+            None,
+            msg,
+            None,
+            None)
         logger.handle(log)
 
     cursor.close()
