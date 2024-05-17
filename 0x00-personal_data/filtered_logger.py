@@ -7,6 +7,9 @@ from typing import List
 import logging
 
 
+PII_FIELDS = ('name', 'email', 'phone', 'ssn', 'password')
+
+
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class """
 
@@ -26,6 +29,17 @@ class RedactingFormatter(logging.Formatter):
             record.msg,
             self.SEPARATOR)
         return super().format(record)
+
+
+def get_logger() -> logging.Logger:
+    """returns a logging.Logger object"""
+    logger = logging.getLogger('user_data')
+    logger.setLevel(logging.INFO)
+    logger.propagate = False
+    sh = logging.StreamHandler()
+    sh.setFormatter(RedactingFormatter(PII_FIELDS))
+    logger.addHandler(sh)
+    return logger
 
 
 def extract(fd: str,
