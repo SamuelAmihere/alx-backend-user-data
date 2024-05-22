@@ -32,3 +32,13 @@ class BasicAuth(Auth):
                     validate=True).decode('utf-8')
             except (binascii.Error, UnicodeDecodeError):
                 return None
+
+    def extract_user_credentials(
+            self, decoded_base64_authorization_header: str) -> (str, str):
+        """Extracts the User Credentials.
+        """
+        if type(decoded_base64_authorization_header) is not str or \
+           ':' not in decoded_base64_authorization_header:
+            return (None, None)
+
+        return tuple(decoded_base64_authorization_header.split(':', 1))
