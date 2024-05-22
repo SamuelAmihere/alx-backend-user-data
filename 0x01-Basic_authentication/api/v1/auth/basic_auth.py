@@ -37,11 +37,15 @@ class BasicAuth(Auth):
             self, decoded_base64_authorization_header: str) -> (str, str):
         """Extracts the User Credentials.
         """
-        if type(decoded_base64_authorization_header) is not str or \
-           ':' not in decoded_base64_authorization_header:
-            return (None, None)
-
-        return tuple(decoded_base64_authorization_header.split(':', 1))
+        if type(decoded_base64_authorization_header) == str:
+            match_f = re.fullmatch(
+                r'(?P<user>[^:]+):(?P<password>.+)',
+                decoded_base64_authorization_header.strip())
+            if match_f:
+                usr = match_f.group('user')
+                pwd = match_f.group('password')
+                return (usr, pwd)
+        return (None, None)
 
     def user_object_from_credentials(
             self,
