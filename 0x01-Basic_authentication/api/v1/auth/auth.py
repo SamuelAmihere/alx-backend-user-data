@@ -5,6 +5,7 @@ The authentication module.
 from flask import request
 from typing import List, TypeVar
 from models.user import User
+import fnmatch
 
 
 class Auth:
@@ -22,7 +23,11 @@ class Auth:
         # Ensure path ends with a '/'
         path = path + '/' if not path.endswith('/') else path
 
-        return path not in excluded_paths
+        for pattern in excluded_paths:
+            if fnmatch.fnmatch(path, pattern):
+                return False
+
+        return True
 
     def authorization_header(self, request=None) -> str:
         """The authorization_header method.
