@@ -25,12 +25,10 @@ class BasicAuth(Auth):
             self, base64_authorization_header: str) -> str:
         """Decodes the Base64 Authorization Header.
         """
-        if type(base64_authorization_header) != str:
-            return None
-
-        try:
-            return base64.b64decode(
-                base64_authorization_header,
-                validate=True).decode('utf-8')
-        except (binascii.Error, UnicodeDecodeError):
-            return None
+        if type(base64_authorization_header) == str:
+            try:
+                return base64.b64decode(
+                    base64_authorization_header,
+                    validate=True).decode('utf-8')
+            except (binascii.Error, UnicodeDecodeError):
+                return None
