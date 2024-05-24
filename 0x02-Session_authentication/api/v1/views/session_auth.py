@@ -3,10 +3,9 @@
 """
 from typing import Tuple
 import os
-from api.v1.views import app_views
 from flask import abort, jsonify, request
 from models.user import User
-from api.v1.app import auth
+from api.v1.views import app_views
 
 
 @app_views.route('/auth_session/login', methods=['POST'], strict_slashes=False)
@@ -31,6 +30,7 @@ def login() -> Tuple[str, int]:
     if len(all_users) <= 0:
         return jsonify(user_email_err), 404
     if all_users[0].is_valid_password(password):
+        from api.v1.app import auth
         resp = jsonify(all_users[0].to_json())
         session_id = auth.create_session(getattr(
                             all_users[0], 'id'))
