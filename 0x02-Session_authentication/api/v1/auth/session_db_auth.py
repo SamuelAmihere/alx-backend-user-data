@@ -11,7 +11,7 @@ from models.user_session import UserSession
 class SessionDBAuth(SessionExpAuth):
     """SessionDBAuth class
     """
-    def create_session(self, user_id=None) -> str:
+    def create_session(self, user_id=None):
         """Create a session and store it in the database
         """
         session_id = super().create_session(user_id)
@@ -31,14 +31,15 @@ class SessionDBAuth(SessionExpAuth):
             return None
         return user_sessions[0].user_id
 
-    def destroy_session(self, request=None) -> bool:
-        """Destroys the UserSession based on the Session ID from the
-         request cookie
+    def destroy_session(self, request=None):
+        """Destroys the UserSession based on the\
+              Session ID from the request cookie
         """
         session_id = self.session_cookie(request)
         if session_id is None:
             return False
-        user_sessions = UserSession.search({'session_id': session_id})
+        user_sessions = UserSession.search(
+            {'session_id': session_id})
         if not user_sessions:
             return False
         user_sessions[0].remove()
