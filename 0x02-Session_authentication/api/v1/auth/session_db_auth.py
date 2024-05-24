@@ -2,16 +2,16 @@
 """
 SessionDBAuth
 """
-from api.v1.auth.session_exp_auth import SessionExpAuth
-from models.user_session import UserSession
 from flask import request
 from datetime import datetime, timedelta
+from api.v1.auth.session_exp_auth import SessionExpAuth
+from models.user_session import UserSession
 
 
 class SessionDBAuth(SessionExpAuth):
     """SessionDBAuth class
     """
-    def create_session(self, user_id=None):
+    def create_session(self, user_id=None) -> str:
         """Create a session and store it in the database
         """
         session_id = super().create_session(user_id)
@@ -31,7 +31,7 @@ class SessionDBAuth(SessionExpAuth):
             return None
         return user_sessions[0].user_id
 
-    def destroy_session(self, request=None):
+    def destroy_session(self, request=None) -> bool:
         """Destroys the UserSession based on the Session ID from the
          request cookie
         """
