@@ -5,9 +5,10 @@ from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
+from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.orm.exc import NoResultFound
 
 from user import User
-
 from user import Base
 
 
@@ -44,4 +45,18 @@ class DB:
         except Exception:
             self._session.rollback()
             return None
+        return user
+
+    def find_user_by(self, **kwargs) -> User:
+        """Find a user in the database by arbitrary keyword arguments
+
+        Returns:
+            User: The found user
+        """
+        try:
+            user = self._session.query(User).filter_by(**kwargs).one()
+        except NoResultFound:
+            raise
+        except InvalidRequestError:
+            raise
         return user
